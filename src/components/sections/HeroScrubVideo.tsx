@@ -57,8 +57,8 @@ export default function HeroScrubVideo() {
           ref={videoRef}
           style={prefersReduced ? undefined : { scale: videoScale, y: videoY }}
           className="absolute inset-0 h-full w-full object-cover"
-          src="/hero-greco.mp4"
-          poster="/hero-greco-poster.jpg"
+          src="hero-greco.mp4"
+          poster="hero-greco-poster.jpg"
           autoPlay
           loop
           muted

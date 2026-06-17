@@ -256,12 +256,42 @@ export const CONTACT = {
  * angeordnet werden. Später durch echte Fotos ersetzen.
  */
 export const galleryImages = [
-  { src: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=1100&q=80', alt: 'Gegrilltes Fleisch und Meze' },
-  { src: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=1100&q=80', alt: 'Griechische Vorspeisen' },
-  { src: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1100&q=80', alt: 'Stimmungsvolles Interieur' },
-  { src: 'https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=1100&q=80', alt: 'Olivenöl und Oliven' },
-  { src: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=1100&q=80', alt: 'Gegrillter Fisch' },
-  { src: 'https://images.unsplash.com/photo-1533777857889-4be7c70b33f7?w=1100&q=80', alt: 'Dessert mit Honig' },
+  {
+    src: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=800&h=1050&fit=crop&q=80',
+    name: 'Schára',
+    de: 'Vom Holzkohlegrill',
+    alt: 'Gegrilltes Fleisch und Meze',
+  },
+  {
+    src: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=800&h=1050&fit=crop&q=80',
+    name: 'Mezédes',
+    de: 'Vorspeisen zum Teilen',
+    alt: 'Griechische Vorspeisen',
+  },
+  {
+    src: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&h=1050&fit=crop&q=80',
+    name: 'Tavérna',
+    de: 'Unser Ambiente',
+    alt: 'Stimmungsvolles Interieur',
+  },
+  {
+    src: 'https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=800&h=1050&fit=crop&q=80',
+    name: 'Eliá',
+    de: 'Olivenöl & Oliven',
+    alt: 'Olivenöl und Oliven',
+  },
+  {
+    src: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800&h=1050&fit=crop&q=80',
+    name: 'Psári',
+    de: 'Fisch & Meeresfrüchte',
+    alt: 'Gegrillter Fisch',
+  },
+  {
+    src: 'https://images.unsplash.com/photo-1533777857889-4be7c70b33f7?w=800&h=1050&fit=crop&q=80',
+    name: 'Glyká',
+    de: 'Süße Verführungen',
+    alt: 'Dessert mit Honig',
+  },
 ]
 
 /** Spezialitäten des Hauses — Highlights mit Bild. */

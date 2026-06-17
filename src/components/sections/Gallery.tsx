@@ -1,100 +1,195 @@
-import { motion, useReducedMotion, type Variants } from 'framer-motion'
+import { useRef, useState } from 'react'
+import {
+  AnimatePresence,
+  motion,
+  useMotionValueEvent,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+} from 'framer-motion'
 import { galleryImages } from '../../data/menu'
 import SectionTitle from '../ui/SectionTitle'
 
 /**
- * Organic / broken-grid gallery.
+ * Galerie — scroll-driven vertical slider.
  *
- * Few but strong images placed on an explicit 12-column editorial grid with
- * varied spans, deliberate vertical offsets and gentle rotations — an
- * asymmetric collage rather than a tidy matrix. On small screens it reflows to
- * a staggered two-column masonry. Each tile reveals on scroll (opacity + lift),
- * keeping its resting tilt; reduced-motion users get a plain fade with no tilt.
+ * The section is tall; a sticky 100svh stage is pinned while you scroll. Scroll
+ * progress glides a vertical carousel of portrait cards (neighbours peek above
+ * and below), swaps the big name with a rolling transition, and morphs the
+ * background colour to match each slide. Inspired by the reference clip.
+ *
+ * Reduced-motion users get a calm static grid instead of the pinned slider.
  */
 
-// Per-tile placement: mobile classes + desktop grid-area, plus a resting tilt.
-const tiles = [
-  { area: 'md:[grid-area:1/1/6/8]', m: 'col-span-2 aspect-[16/10]', rot: -1.5 },
-  { area: 'md:[grid-area:1/8/8/13]', m: 'col-span-1 aspect-[3/4]', rot: 1.5 },
-  { area: 'md:[grid-area:6/1/12/5]', m: 'col-span-1 aspect-[3/4] mt-6', rot: 1 },
-  { area: 'md:[grid-area:6/5/10/8]', m: 'col-span-1 aspect-square', rot: -1 },
-  { area: 'md:[grid-area:8/8/13/13]', m: 'col-span-1 aspect-square mt-6', rot: 1.5 },
-  { area: 'md:[grid-area:10/5/13/8]', m: 'col-span-2 aspect-[16/9]', rot: -1.5 },
-]
+// Warm backdrop colour per slide (harmonises with the turmeric/malt palette).
+const SLIDE_BG = ['#2a2312', '#5a3a1e', '#3c4030', '#6b4423', '#332618', '#4a4628']
+
+// Carousel geometry, in svh units.
+const STAGE = 64
+const CARD = 40
+const GAP = 4
+const SPACING = CARD + GAP
+const CENTER = STAGE / 2 - CARD / 2
 
 export default function Gallery() {
   const prefersReduced = useReducedMotion()
+  const ref = useRef<HTMLElement>(null)
+  const count = galleryImages.length
+  const [active, setActive] = useState(0)
 
-  const container: Variants = {
-    hidden: {},
-    show: { transition: { staggerChildren: 0.1 } },
-  }
-  const item: Variants = {
-    hidden: prefersReduced ? { opacity: 0 } : { opacity: 0, y: 32, scale: 0.95 },
-    show: (rot: number) => ({
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      rotate: prefersReduced ? 0 : rot,
-      transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] },
-    }),
-  }
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ['start start', 'end end'],
+  })
 
-  return (
-    <section id="galerie" className="relative overflow-hidden bg-[var(--color-sand)] py-24 sm:py-32">
-      {/* Soft turmeric glow for depth */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -right-32 top-20 h-96 w-96 rounded-full opacity-30 blur-3xl"
-        style={{ background: 'var(--color-turmeric)' }}
-      />
+  // Background colour morph across the slides.
+  const bg = useTransform(
+    scrollYProgress,
+    galleryImages.map((_, i) => i / (count - 1)),
+    SLIDE_BG,
+  )
 
-      <div className="relative mx-auto max-w-6xl px-6">
-        <SectionTitle overline="Eindrücke" title="Galerie" greek="Στιγμές" />
+  // Continuous glide of the card column, tied directly to scroll.
+  const columnY = useTransform(
+    scrollYProgress,
+    (v) => `${CENTER - v * (count - 1) * SPACING}svh`,
+  )
 
-        <motion.div
-          variants={container}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, margin: '-80px' }}
-          className="mt-16 grid grid-cols-2 gap-4 sm:gap-5 md:grid-cols-12 md:[grid-auto-rows:3.2rem] md:gap-6"
-        >
-          {galleryImages.map((img, i) => {
-            const t = tiles[i % tiles.length]
-            return (
-              <motion.figure
-                key={img.src}
-                custom={t.rot}
-                variants={item}
-                whileHover={prefersReduced ? undefined : { scale: 1.03, rotate: 0, zIndex: 10 }}
-                className={`group relative overflow-hidden rounded-sm shadow-xl ring-1 ring-[var(--color-malt)]/15 ${t.m} ${t.area} md:mt-0 md:aspect-auto`}
-              >
-                <img
-                  src={img.src}
-                  alt={img.alt}
-                  loading="lazy"
-                  className="h-full w-full object-cover transition-transform duration-[1.2s] ease-out group-hover:scale-110"
-                />
-                {/* Caption on hover */}
-                <figcaption className="absolute inset-0 flex items-end bg-gradient-to-t from-[var(--color-malt)]/85 via-transparent to-transparent p-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                  <span className="font-script italic text-lg text-[var(--color-parchment)]">
-                    {img.alt}
-                  </span>
+  useMotionValueEvent(scrollYProgress, 'change', (v) => {
+    const idx = Math.min(count - 1, Math.max(0, Math.round(v * (count - 1))))
+    setActive(idx)
+  })
+
+  // ── Reduced-motion fallback: a quiet grid ──────────────────────
+  if (prefersReduced) {
+    return (
+      <section id="galerie" className="bg-[var(--color-aegean)] py-24 sm:py-32">
+        <div className="mx-auto max-w-6xl px-6">
+          <SectionTitle light overline="Eindrücke" title="Galerie" greek="Στιγμές" />
+          <div className="mt-14 grid grid-cols-2 gap-4 md:grid-cols-3">
+            {galleryImages.map((img) => (
+              <figure key={img.src} className="overflow-hidden rounded-sm shadow-lg">
+                <img src={img.src} alt={img.alt} loading="lazy" className="aspect-[3/4] w-full object-cover" />
+                <figcaption className="bg-[var(--color-malt-d)] px-3 py-2 font-heading text-sm text-[var(--color-parchment)]">
+                  {img.name} <span className="text-[var(--color-cream)]/60">· {img.de}</span>
                 </figcaption>
-                {/* Thin turmeric inner frame on hover */}
-                <span
-                  aria-hidden="true"
-                  className="pointer-events-none absolute inset-2 rounded-sm border border-[var(--color-turmeric)]/0 transition-colors duration-300 group-hover:border-[var(--color-turmeric)]/70"
-                />
-              </motion.figure>
-            )
-          })}
-        </motion.div>
+              </figure>
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
 
-        <p className="mt-12 text-center font-script italic text-xl text-[var(--color-sienna)]">
-          Καλῶς ὁρίσατε — treten Sie ein und genießen Sie.
-        </p>
-      </div>
+  // ── Scroll-driven slider ───────────────────────────────────────
+  return (
+    <section
+      id="galerie"
+      ref={ref}
+      className="relative"
+      style={{ height: `${count * 80}vh` }}
+    >
+      <motion.div
+        style={{ backgroundColor: bg }}
+        className="sticky top-0 flex h-[100svh] flex-col overflow-hidden"
+      >
+        <div className="mx-auto w-full max-w-6xl px-6 pt-20 sm:pt-24">
+          <SectionTitle light overline="Eindrücke" title="Galerie" greek="Στιγμές" />
+        </div>
+
+        {/* Stage */}
+        <div className="mx-auto grid w-full max-w-6xl flex-1 grid-cols-1 items-center gap-6 px-6 md:grid-cols-2">
+          {/* Left — counter + rolling name */}
+          <div className="order-2 text-center md:order-1 md:text-left">
+            <p className="font-heading tracking-antique text-sm text-[var(--color-turmeric)]">
+              {String(active + 1).padStart(2, '0')}
+              <span className="opacity-50"> / {String(count).padStart(2, '0')}</span>
+            </p>
+
+            <div className="mt-3 h-[4.5rem] overflow-hidden sm:h-[5.5rem] md:h-[7rem]">
+              <AnimatePresence mode="popLayout" initial={false}>
+                <motion.h3
+                  key={active}
+                  initial={{ y: '115%' }}
+                  animate={{ y: '0%' }}
+                  exit={{ y: '-115%' }}
+                  transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+                  className="font-display text-6xl leading-none text-[var(--color-parchment)] sm:text-7xl md:text-8xl"
+                >
+                  {galleryImages[active].name}
+                </motion.h3>
+              </AnimatePresence>
+            </div>
+
+            <div className="mt-3 h-8 overflow-hidden">
+              <AnimatePresence mode="popLayout" initial={false}>
+                <motion.p
+                  key={active}
+                  initial={{ y: '120%', opacity: 0 }}
+                  animate={{ y: '0%', opacity: 1 }}
+                  exit={{ y: '-120%', opacity: 0 }}
+                  transition={{ duration: 0.5, ease: 'easeOut' }}
+                  className="font-script text-xl italic text-[var(--color-cream)]"
+                >
+                  {galleryImages[active].de}
+                </motion.p>
+              </AnimatePresence>
+            </div>
+
+            <p className="mt-8 hidden max-w-xs text-sm text-[var(--color-cream)]/55 md:block">
+              Scrollen Sie, um durch unsere Eindrücke zu blättern.
+            </p>
+          </div>
+
+          {/* Right — vertical carousel */}
+          <div className="relative order-1 h-[64svh] overflow-hidden md:order-2">
+            {/* soft fades top/bottom */}
+            <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-16 bg-gradient-to-b from-black/30 to-transparent" />
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-16 bg-gradient-to-t from-black/30 to-transparent" />
+
+            <motion.div
+              style={{ y: columnY }}
+              className="absolute left-1/2 top-0 -translate-x-1/2"
+            >
+              {galleryImages.map((img, i) => {
+                const dist = Math.abs(i - active)
+                return (
+                  <div
+                    key={img.src}
+                    style={{ height: `${CARD}svh`, marginBottom: `${GAP}svh` }}
+                    className={`relative aspect-[3/4] overflow-hidden rounded-md transition-all duration-500 ease-out ${
+                      dist === 0
+                        ? 'scale-100 opacity-100 shadow-2xl ring-2 ring-[var(--color-turmeric)]/60'
+                        : dist === 1
+                          ? 'scale-[0.84] opacity-45'
+                          : 'scale-[0.7] opacity-20'
+                    }`}
+                  >
+                    <img
+                      src={img.src}
+                      alt={img.alt}
+                      loading="lazy"
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
+                )
+              })}
+            </motion.div>
+          </div>
+        </div>
+
+        {/* Progress bar */}
+        <div className="mx-auto flex w-full max-w-6xl items-center justify-center gap-2 px-6 pb-10 sm:pb-12">
+          {galleryImages.map((_, i) => (
+            <span
+              key={i}
+              className={`h-1 rounded-full transition-all duration-300 ${
+                i === active ? 'w-8 bg-[var(--color-turmeric)]' : 'w-2 bg-[var(--color-cream)]/30'
+              }`}
+            />
+          ))}
+        </div>
+      </motion.div>
     </section>
   )
 }
