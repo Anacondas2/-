@@ -250,15 +250,63 @@ export const CONTACT = {
   ],
 } as const
 
-/** Platzhalter-Fotos (Unsplash) — später durch echte Bilder ersetzen. */
+/**
+ * Galerie — kuratierte Auswahl (Unsplash). Bewusst wenige, starke Bilder,
+ * die im Komponenten-Layout zu einem organischen, gebrochenen Raster
+ * angeordnet werden. Später durch echte Fotos ersetzen.
+ */
 export const galleryImages = [
-  { src: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=900&q=80', alt: 'Gegrilltes Fleisch und Meze' },
-  { src: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=900&q=80', alt: 'Griechische Vorspeisen' },
-  { src: 'https://images.unsplash.com/photo-1559339352-11d035aa65de?w=900&q=80', alt: 'Gedeckter Tisch im Restaurant' },
-  { src: 'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=900&q=80', alt: 'Frischer mediterraner Salat' },
-  { src: 'https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=900&q=80', alt: 'Olivenöl und Oliven' },
-  { src: 'https://images.unsplash.com/photo-1576749872435-ff88a71c1ae2?w=900&q=80', alt: 'Frische Pita und Dips' },
-  { src: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=900&q=80', alt: 'Gegrillter Fisch' },
-  { src: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=900&q=80', alt: 'Stimmungsvolles Restaurant-Interieur' },
-  { src: 'https://images.unsplash.com/photo-1533777857889-4be7c70b33f7?w=900&q=80', alt: 'Süßes Dessert mit Honig' },
+  { src: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=1100&q=80', alt: 'Gegrilltes Fleisch und Meze' },
+  { src: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=1100&q=80', alt: 'Griechische Vorspeisen' },
+  { src: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1100&q=80', alt: 'Stimmungsvolles Interieur' },
+  { src: 'https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=1100&q=80', alt: 'Olivenöl und Oliven' },
+  { src: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=1100&q=80', alt: 'Gegrillter Fisch' },
+  { src: 'https://images.unsplash.com/photo-1533777857889-4be7c70b33f7?w=1100&q=80', alt: 'Dessert mit Honig' },
 ]
+
+/** Spezialitäten des Hauses — Highlights mit Bild. */
+export const highlights = [
+  {
+    name: 'Kleftiko',
+    greek: 'Κλέφτικο',
+    description:
+      'Über Stunden geschmortes Lamm mit Knoblauch, Zitrone und Bergkräutern — zart bis aufs Bein.',
+    img: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=900&q=80',
+  },
+  {
+    name: 'Gegrillter Oktopus',
+    greek: 'Χταπόδι',
+    description:
+      'Über Holzkohle gegrillt, mit Kapern, Oregano und einem Spritzer Zitronenöl.',
+    img: 'https://images.unsplash.com/photo-1559339352-11d035aa65de?w=900&q=80',
+  },
+  {
+    name: 'Baklava',
+    greek: 'Μπακλαβάς',
+    description:
+      'Hauchdünner Filoteig, Walnüsse und Thymianhonig — unser süßer Abschluss seit 1987.',
+    img: 'https://images.unsplash.com/photo-1533777857889-4be7c70b33f7?w=900&q=80',
+  },
+] as const
+
+/** Gästestimmen. */
+export const testimonials = [
+  {
+    quote:
+      'Wie ein Kurzurlaub in Griechenland — herzlicher Service und Gerichte, die nach Sommer schmecken.',
+    author: 'Marlene K.',
+    source: 'Google · ★★★★★',
+  },
+  {
+    quote:
+      'Das beste Kleftiko außerhalb Kretas. Wir kommen seit Jahren und werden immer wie Familie empfangen.',
+    author: 'Dimitri & Sven',
+    source: 'Stammgäste',
+  },
+  {
+    quote:
+      'Stimmungsvolles Ambiente, fantastische Meze-Platte und ein Ouzo aufs Haus. Absolute Empfehlung!',
+    author: 'Familie Brandt',
+    source: 'Google · ★★★★★',
+  },
+] as const

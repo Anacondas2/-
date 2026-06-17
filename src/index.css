@@ -5,20 +5,31 @@
    Palette extracted from the neo-antique banquet artwork.
    ============================================================ */
 @theme {
-  /* Colors */
-  --color-aegean: #253948; /* deep slate-blue (video background) */
-  --color-aegean-d: #1a2a36; /* darker — nav / footer */
-  --color-aegean-l: #34536a; /* lighter blue accent */
-  --color-terracotta: #a66a3d; /* terracotta / copper (dominant) */
-  --color-sienna: #643b2a; /* dark sienna */
-  --color-olive: #786644; /* olive */
-  --color-gold: #c9a94a; /* aged gold (accent / frames) */
-  --color-gold-l: #e4cd86; /* light gold */
-  --color-cream: #e1c599; /* cream-gold (text on dark) */
-  --color-sand: #cdb189; /* sand (section background) */
-  --color-parchment: #f2e7ce; /* parchment (light background) */
-  --color-parchment-d: #e8d9b8; /* parchment deep */
-  --color-ink: #2c1a0e; /* dark text */
+  /* ── Core palette: Turmeric + Malt ───────────────────────────
+     turmeric #FFBE0B — vivid golden accent
+     malt     #2A2312 — deep roasted-brown base                  */
+  --color-turmeric: #ffbe0b; /* primary accent */
+  --color-turmeric-d: #e0a406; /* deep turmeric */
+  --color-turmeric-l: #ffd75a; /* light turmeric */
+  --color-malt: #2a2312; /* malt — darkest base */
+  --color-malt-d: #1c1810; /* deeper malt — footer */
+  --color-malt-l: #3a2f1c; /* lighter malt — cards */
+
+  /* Semantic aliases — kept so existing components stay in tune.
+     (Names are historical; values now follow the turmeric/malt scheme.) */
+  --color-aegean: #2a2312; /* dark section base (= malt) */
+  --color-aegean-d: #1c1810; /* nav / footer (= malt deep) */
+  --color-aegean-l: #3a2f1c; /* raised surface (= malt light) */
+  --color-terracotta: #c56a30; /* warm copper secondary */
+  --color-sienna: #7a4622; /* dark sienna */
+  --color-olive: #9a7e3a; /* warm olive-tan */
+  --color-gold: #ffbe0b; /* accent / frames (= turmeric) */
+  --color-gold-l: #ffd75a; /* light accent (= turmeric light) */
+  --color-cream: #efd9a6; /* warm cream (text on dark) */
+  --color-sand: #dcc58e; /* sand (section background) */
+  --color-parchment: #f8efd9; /* parchment (light background) */
+  --color-parchment-d: #eee0c0; /* parchment deep */
+  --color-ink: #2a2312; /* dark text (= malt) */
 
   /* Fonts */
   --font-display: "Abril Fatface", "Playfair Display SC", serif;
