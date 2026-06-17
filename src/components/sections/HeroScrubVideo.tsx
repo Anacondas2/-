@@ -43,6 +43,10 @@ export default function HeroScrubVideo() {
     if (!canvas || !section) return
     const ctx = canvas.getContext('2d')
     if (!ctx) return
+    // High-quality scaling for crisp frames (poster stays visible through the
+    // transparent canvas until the first frame is painted).
+    ctx.imageSmoothingEnabled = true
+    ctx.imageSmoothingQuality = 'high'
 
     // Graceful degradation: on Save-Data or a slow connection, skip the heavy
     // frame download entirely and just show the static poster.
