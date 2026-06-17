@@ -5,7 +5,7 @@ import AnimatedSection from '../ui/AnimatedSection'
 import SectionTitle from '../ui/SectionTitle'
 
 const fieldClass =
-  'w-full rounded-sm border border-[var(--color-olive)]/40 bg-[var(--color-parchment)] px-4 py-3 font-body text-[var(--color-ink)] placeholder:text-[var(--color-olive)]/60 focus:border-[var(--color-gold)] focus:outline-2 focus:outline-offset-2 focus:outline-[var(--color-gold)]/50'
+  'w-full rounded-sm border border-[var(--color-olive)]/40 bg-[var(--color-parchment)] px-4 py-3 font-body text-base text-[var(--color-ink)] placeholder:text-[var(--color-olive)]/60 focus:border-[var(--color-gold)] focus:outline-2 focus:outline-offset-2 focus:outline-[var(--color-gold)]/50'
 
 const labelClass =
   'mb-1.5 block font-heading tracking-antique text-[11px] uppercase text-[var(--color-sienna)]'
@@ -104,7 +104,7 @@ export default function Reservation() {
 
                 <button
                   type="submit"
-                  className="w-full rounded-sm bg-[var(--color-gold)] px-6 py-3.5 font-heading tracking-antique text-sm uppercase text-[var(--color-aegean-d)] transition-transform duration-200 hover:scale-[1.02] hover:bg-[var(--color-gold-l)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-gold)]"
+                  className="w-full rounded-sm bg-[var(--color-gold)] px-6 py-4 font-heading tracking-antique text-sm uppercase text-[var(--color-aegean-d)] transition-transform duration-200 active:scale-[0.98] sm:hover:scale-[1.02] sm:hover:bg-[var(--color-gold-l)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-gold)]"
                 >
                   Anfrage senden
                 </button>

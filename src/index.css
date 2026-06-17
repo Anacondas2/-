@@ -54,6 +54,20 @@
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    /* No grey flash when tapping links/buttons on touch devices. */
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Comfortable tap targets and instant tap feedback on touch. */
+  a,
+  button,
+  [role='tab'] {
+    touch-action: manipulation;
+  }
+
+  img {
+    -webkit-user-drag: none;
+    user-select: none;
   }
 
   ::selection {

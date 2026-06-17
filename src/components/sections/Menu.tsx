@@ -30,7 +30,7 @@ export default function Menu() {
                 role="tab"
                 aria-selected={isActive}
                 onClick={() => setActive(c.id)}
-                className={`shrink-0 rounded-sm border px-5 py-2 font-heading tracking-antique text-xs uppercase transition-colors duration-200 ${
+                className={`shrink-0 rounded-sm border px-5 py-2.5 font-heading tracking-antique text-xs uppercase transition-colors duration-200 ${
                   isActive
                     ? 'border-[var(--color-gold)] bg-[var(--color-gold)] text-[var(--color-aegean-d)]'
                     : 'border-[var(--color-cream)]/30 text-[var(--color-cream)] hover:border-[var(--color-gold-l)] hover:text-[var(--color-gold-l)]'
