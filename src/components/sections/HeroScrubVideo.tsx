@@ -12,8 +12,9 @@ import { ChevronDown } from 'lucide-react'
  *
  * - Two frame sets: lighter 900px for phones, sharper 1280px for desktops.
  * - Canvas is DPR-aware and draws each frame "cover" (no distortion).
- * - A rAF loop eases the frame index toward the scroll target, so footage only
- *   moves while scrolling and freezes when you stop.
+ * - The rAF loop eases the frame index toward the scroll target and then
+ *   STOPS once settled — so it costs nothing (and no battery) while idle, and
+ *   wakes again on the next scroll.
  * - Reduced-motion: the first frame is shown static.
  */
 const FRAME_COUNT = 73
@@ -47,6 +48,8 @@ export default function HeroScrubVideo() {
     const frames: HTMLImageElement[] = []
     let loaded = 0
     let cancelled = false
+    let raf = 0
+    let running = false
 
     const sizeCanvas = () => {
       const dpr = Math.min(window.devicePixelRatio || 1, 2)
@@ -74,12 +77,34 @@ export default function HeroScrubVideo() {
       targetIdx.current = p * (FRAME_COUNT - 1)
     }
 
-    let raf = 0
     const tick = () => {
-      currentIdx.current += (targetIdx.current - currentIdx.current) * 0.16
+      const diff = targetIdx.current - currentIdx.current
+      currentIdx.current += diff * 0.16
       const idx = Math.max(0, Math.min(FRAME_COUNT - 1, Math.round(currentIdx.current)))
       if (idx !== drawnIdx.current) draw(idx)
+      if (Math.abs(diff) < 0.002) {
+        currentIdx.current = targetIdx.current
+        running = false
+        raf = 0
+        return
+      }
       raf = requestAnimationFrame(tick)
+    }
+
+    const wake = () => {
+      if (running || prefersReduced) return
+      running = true
+      raf = requestAnimationFrame(tick)
+    }
+
+    const onScroll = () => {
+      computeTarget()
+      wake()
+    }
+    const onResize = () => {
+      sizeCanvas()
+      draw(Math.round(currentIdx.current))
+      wake()
     }
 
     // Preload all frames.
@@ -104,14 +129,14 @@ export default function HeroScrubVideo() {
 
     sizeCanvas()
     computeTarget()
-    if (!prefersReduced) tick()
-    window.addEventListener('scroll', computeTarget, { passive: true })
-    window.addEventListener('resize', sizeCanvas)
+    wake()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onResize)
     return () => {
       cancelled = true
-      cancelAnimationFrame(raf)
-      window.removeEventListener('scroll', computeTarget)
-      window.removeEventListener('resize', sizeCanvas)
+      if (raf) cancelAnimationFrame(raf)
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onResize)
     }
   }, [prefersReduced])
 
