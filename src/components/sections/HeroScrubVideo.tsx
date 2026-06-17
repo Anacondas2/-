@@ -44,6 +44,15 @@ export default function HeroScrubVideo() {
     const ctx = canvas.getContext('2d')
     if (!ctx) return
 
+    // Graceful degradation: on Save-Data or a slow connection, skip the heavy
+    // frame download entirely and just show the static poster.
+    const conn = (navigator as Navigator & { connection?: { saveData?: boolean; effectiveType?: string } }).connection
+    const liteNetwork = !!conn?.saveData || (!!conn?.effectiveType && /(^|-)2g$/.test(conn.effectiveType))
+    if (prefersReduced || liteNetwork) {
+      setReady(true)
+      return
+    }
+
     const dir = window.matchMedia('(max-width: 768px)').matches ? 'm' : 'd'
     const frames: HTMLImageElement[] = []
     let loaded = 0
