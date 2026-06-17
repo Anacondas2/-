@@ -170,7 +170,7 @@ export default function HeroScrubVideo() {
           <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" aria-hidden="true" />
         ) : (
           <img
-            src="hero-poster.jpg"
+            src="hero-mobile.webp"
             alt="Festliche neo-antike Bankettszene im Café Greco"
             fetchPriority="high"
             className="absolute inset-0 h-full w-full object-cover"
