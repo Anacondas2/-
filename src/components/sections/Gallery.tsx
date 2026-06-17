@@ -107,13 +107,13 @@ export default function Gallery() {
             </p>
 
             <div className="mt-3 h-[4.5rem] overflow-hidden sm:h-[5.5rem] md:h-[7rem]">
-              <AnimatePresence mode="popLayout" initial={false}>
+              <AnimatePresence mode="wait" initial={false}>
                 <motion.h3
                   key={active}
-                  initial={{ y: '115%' }}
+                  initial={{ y: '110%' }}
                   animate={{ y: '0%' }}
-                  exit={{ y: '-115%' }}
-                  transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+                  exit={{ y: '-110%' }}
+                  transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
                   className="font-display text-6xl leading-none text-[var(--color-parchment)] sm:text-7xl md:text-8xl"
                 >
                   {galleryImages[active].name}
@@ -122,13 +122,13 @@ export default function Gallery() {
             </div>
 
             <div className="mt-3 h-8 overflow-hidden">
-              <AnimatePresence mode="popLayout" initial={false}>
+              <AnimatePresence mode="wait" initial={false}>
                 <motion.p
                   key={active}
                   initial={{ y: '120%', opacity: 0 }}
                   animate={{ y: '0%', opacity: 1 }}
                   exit={{ y: '-120%', opacity: 0 }}
-                  transition={{ duration: 0.5, ease: 'easeOut' }}
+                  transition={{ duration: 0.35, ease: 'easeOut' }}
                   className="font-script text-xl italic text-[var(--color-cream)]"
                 >
                   {galleryImages[active].de}

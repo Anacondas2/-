@@ -3,64 +3,100 @@ import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion
 import { ChevronDown } from 'lucide-react'
 
 /**
- * Hero section — neo-antique banquet video.
+ * Hero section — neo-antique banquet video, scrubbed by scroll.
  *
- * The video autoplays and loops (this is rock-solid even when the built
- * index.html is opened directly from disk via file://, where seeking a video's
- * currentTime is blocked by browsers — the reason an earlier scroll-scrub
- * version showed nothing but a dark frame).
+ * The section is tall (~300vh). A sticky 100svh stage holds the video, whose
+ * currentTime is driven by how far you have scrolled through the section — so
+ * the footage only ever moves while you scroll, forward or back, and freezes
+ * the moment you stop. A requestAnimationFrame loop eases toward the target
+ * time for smooth, buttery seeking. The video is encoded with a keyframe on
+ * every frame, which makes that frame-accurate seeking possible.
  *
- * The "scroll animation" is a cinematic parallax: while the sticky stage is
- * pinned, the footage slowly scales up and drifts while the title + CTAs rise
- * and fade. All driven by transform/opacity only (UX guideline) and disabled
- * under prefers-reduced-motion.
+ * Reduced-motion: the poster frame is shown static, with no scrubbing.
  */
 export default function HeroScrubVideo() {
   const sectionRef = useRef<HTMLElement>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
+  const targetTime = useRef(0)
+  const currentTime = useRef(0)
   const prefersReduced = useReducedMotion()
 
+  // Fade the title/CTA out as we scroll through the hero.
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ['start start', 'end start'],
   })
-
-  // Cinematic parallax: gentle zoom + drift across the pinned stage.
-  const videoScale = useTransform(scrollYProgress, [0, 1], [1, 1.18])
-  const videoY = useTransform(scrollYProgress, [0, 1], ['0%', '12%'])
   const overlayOpacity = useTransform(scrollYProgress, [0, 0.5, 0.78], [1, 1, 0])
   const overlayY = useTransform(scrollYProgress, [0, 0.8], [0, -70])
   const hintOpacity = useTransform(scrollYProgress, [0, 0.12], [1, 0])
 
-  // Make sure autoplay actually starts (some browsers need a nudge).
   useEffect(() => {
     const video = videoRef.current
-    if (!video) return
-    video.muted = true
-    const play = () => void video.play().catch(() => {})
-    play()
-    video.addEventListener('canplay', play, { once: true })
-    return () => video.removeEventListener('canplay', play)
-  }, [])
+    const section = sectionRef.current
+    if (!video || !section || prefersReduced) return
+
+    // Unlock frame seeking (needed by Safari/iOS): play then immediately pause.
+    const unlock = () => {
+      void video
+        .play()
+        .then(() => video.pause())
+        .catch(() => {})
+    }
+    if (video.readyState >= 1) unlock()
+    else video.addEventListener('loadedmetadata', unlock, { once: true })
+
+    let raf = 0
+    const computeTarget = () => {
+      const rect = section.getBoundingClientRect()
+      const scrollable = rect.height - window.innerHeight
+      const progress = scrollable > 0 ? Math.min(1, Math.max(0, -rect.top / scrollable)) : 0
+      const dur = video.duration || 3
+      targetTime.current = progress * (dur - 0.05)
+    }
+
+    const tick = () => {
+      // Ease toward the scroll-derived target; settles (and stops) when reached.
+      currentTime.current += (targetTime.current - currentTime.current) * 0.1
+      if (
+        video.readyState >= 2 &&
+        Math.abs(video.currentTime - currentTime.current) > 0.01
+      ) {
+        try {
+          video.currentTime = currentTime.current
+        } catch {
+          /* not seekable yet */
+        }
+      }
+      raf = requestAnimationFrame(tick)
+    }
+
+    computeTarget()
+    tick()
+    window.addEventListener('scroll', computeTarget, { passive: true })
+    window.addEventListener('resize', computeTarget)
+    return () => {
+      cancelAnimationFrame(raf)
+      window.removeEventListener('scroll', computeTarget)
+      window.removeEventListener('resize', computeTarget)
+      video.removeEventListener('loadedmetadata', unlock)
+    }
+  }, [prefersReduced])
 
   return (
     <section
       ref={sectionRef}
       id="start"
       className="relative"
-      style={{ height: prefersReduced ? '100svh' : '185vh' }}
+      style={{ height: prefersReduced ? '100svh' : '300vh' }}
       aria-label="Willkommen bei Café Greco"
     >
       <div className="sticky top-0 h-[100svh] w-full overflow-hidden bg-[var(--color-malt-d)]">
-        {/* Banquet video */}
-        <motion.video
+        {/* Scrubbed banquet video */}
+        <video
           ref={videoRef}
-          style={prefersReduced ? undefined : { scale: videoScale, y: videoY }}
           className="absolute inset-0 h-full w-full object-cover"
           src="hero-greco.mp4"
           poster="hero-greco-poster.jpg"
-          autoPlay
-          loop
           muted
           playsInline
           preload="auto"
@@ -71,7 +107,7 @@ export default function HeroScrubVideo() {
           className="absolute inset-0"
           style={{
             background:
-              'radial-gradient(ellipse at center, rgba(28,24,16,0.20) 0%, rgba(28,24,16,0.78) 100%)',
+              'radial-gradient(ellipse at center, rgba(28,24,16,0.18) 0%, rgba(28,24,16,0.76) 100%)',
           }}
           aria-hidden="true"
         />
