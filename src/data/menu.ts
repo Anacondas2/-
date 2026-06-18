@@ -302,7 +302,8 @@ export const highlights = [
     tagline: 'Langsam geschmort',
     description:
       'Über Stunden geschmortes Lamm mit Knoblauch, Zitrone und Bergkräutern — zart bis aufs Bein.',
-    img: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=1200&q=80',
+    img: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=1000&q=80',
+    accent: '#ecd2ab', // warm clay
   },
   {
     name: 'Gegrillter Oktopus',
@@ -310,7 +311,8 @@ export const highlights = [
     tagline: 'Über offener Flamme',
     description:
       'Über Holzkohle gegrillt, mit Kapern, Oregano und einem Spritzer Zitronenöl.',
-    img: 'https://images.unsplash.com/photo-1559339352-11d035aa65de?w=1200&q=80',
+    img: 'https://images.unsplash.com/photo-1559339352-11d035aa65de?w=1000&q=80',
+    accent: '#ded8b6', // soft olive
   },
   {
     name: 'Baklava',
@@ -318,7 +320,8 @@ export const highlights = [
     tagline: 'Hausrezept seit 1987',
     description:
       'Hauchdünner Filoteig, Walnüsse und Thymianhonig — unser süßer Abschluss seit 1987.',
-    img: 'https://images.unsplash.com/photo-1533777857889-4be7c70b33f7?w=1200&q=80',
+    img: 'https://images.unsplash.com/photo-1533777857889-4be7c70b33f7?w=1000&q=80',
+    accent: '#f1dca6', // honey gold
   },
 ] as const
 
