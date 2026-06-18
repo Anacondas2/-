@@ -1,69 +1,113 @@
-import { motion, useReducedMotion, type Variants } from 'framer-motion'
+import { useRef } from 'react'
+import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion'
 import { highlights } from '../../data/menu'
+import AnimatedSection from '../ui/AnimatedSection'
+import FramedImage from '../ui/FramedImage'
+import GreekMeander from '../ui/GreekMeander'
 import SectionTitle from '../ui/SectionTitle'
 
-/**
- * Spezialitäten des Hauses — three signature dishes with imagery.
- * Adds visual weight and a clear reason-to-visit between story and full menu.
- */
-export default function Highlights() {
-  const prefersReduced = useReducedMotion()
+type Highlight = (typeof highlights)[number]
 
-  const container: Variants = {
-    hidden: {},
-    show: { transition: { staggerChildren: 0.12 } },
-  }
-  const card: Variants = {
-    hidden: prefersReduced ? { opacity: 0 } : { opacity: 0, y: 40 },
-    show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] } },
-  }
+function SpotlightRow({ item, index }: { item: Highlight; index: number }) {
+  const ref = useRef<HTMLDivElement>(null)
+  const prefersReduced = useReducedMotion()
+  const reversed = index % 2 === 1
+
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] })
+  const imgY = useTransform(scrollYProgress, [0, 1], [48, -48])
+  const numY = useTransform(scrollYProgress, [0, 1], [24, -24])
 
   return (
-    <section className="bg-[var(--color-parchment-d)] py-24 sm:py-32">
-      <div className="mx-auto max-w-6xl px-6">
-        <SectionTitle
-          overline="Empfehlungen des Hauses"
-          title="Spezialitäten"
-          greek="Οἱ ἐκλεκτές μας"
-        />
-
-        <motion.div
-          variants={container}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, margin: '-80px' }}
-          className="mt-16 grid gap-8 md:grid-cols-3"
+    <div
+      ref={ref}
+      className="grid items-center gap-10 lg:grid-cols-12 lg:gap-6"
+    >
+      {/* Image side */}
+      <div className={`relative lg:col-span-7 ${reversed ? 'lg:order-2' : ''}`}>
+        {/* Ghost number */}
+        <motion.span
+          aria-hidden="true"
+          style={{ y: prefersReduced ? 0 : numY }}
+          className={`pointer-events-none absolute -top-10 select-none font-display leading-none text-[clamp(5rem,13vw,11rem)] text-[var(--color-turmeric)] opacity-20 ${
+            reversed ? '-right-2 lg:-right-6' : '-left-2 lg:-left-6'
+          }`}
         >
-          {highlights.map((h, i) => (
-            <motion.article
-              key={h.name}
-              variants={card}
-              whileHover={prefersReduced ? undefined : { y: -8 }}
-              className={`group overflow-hidden rounded-sm bg-[var(--color-parchment)] shadow-lg ring-1 ring-[var(--color-malt)]/10 ${
-                i === 1 ? 'md:-mt-8' : i === 2 ? 'md:mt-6' : ''
-              }`}
-            >
-              <div className="relative aspect-[4/3] overflow-hidden">
-                <img
-                  src={h.img}
-                  alt={h.name}
-                  loading="lazy"
-                  className="h-full w-full object-cover transition-transform duration-[1.2s] ease-out group-hover:scale-110"
-                />
-                <span className="absolute right-3 top-3 rounded-full bg-[var(--color-turmeric)] px-3 py-1 font-heading tracking-antique text-[10px] uppercase text-[var(--color-malt)]">
-                  Empfehlung
-                </span>
-              </div>
-              <div className="p-6">
-                <p className="font-script italic text-lg text-[var(--color-terracotta)]">{h.greek}</p>
-                <h3 className="mt-1 font-display text-2xl text-[var(--color-ink)]">{h.name}</h3>
-                <p className="mt-3 text-sm leading-relaxed text-[var(--color-ink)]/80">
-                  {h.description}
-                </p>
-              </div>
-            </motion.article>
+          {String(index + 1).padStart(2, '0')}
+        </motion.span>
+
+        <AnimatedSection>
+          <FramedImage
+            src={item.img}
+            alt={item.name}
+            rotate={reversed ? 1.5 : -1.5}
+            parallax={imgY}
+            className="relative z-[1] aspect-[4/5] w-full"
+          />
+        </AnimatedSection>
+      </div>
+
+      {/* Text side */}
+      <div
+        className={`relative z-10 lg:col-span-5 ${
+          reversed ? 'lg:order-1 lg:-mr-10 lg:text-right' : 'lg:-ml-10'
+        }`}
+      >
+        <AnimatedSection delay={0.12}>
+          <p
+            className={`font-heading tracking-antique text-xs uppercase text-[var(--color-turmeric-d)] ${
+              reversed ? 'lg:text-right' : ''
+            }`}
+          >
+            {item.tagline}
+          </p>
+          <p className="mt-2 font-script text-xl italic text-[var(--color-terracotta)]">
+            {item.greek}
+          </p>
+          <h3 className="mt-1 font-display text-5xl leading-[0.95] text-[var(--color-ink)] sm:text-6xl">
+            {item.name}
+          </h3>
+
+          <span
+            className={`mt-5 block h-px w-20 bg-[var(--color-gold)]/70 ${reversed ? 'lg:ml-auto' : ''}`}
+            aria-hidden="true"
+          />
+
+          <p className="mt-5 max-w-md text-[var(--color-ink)]/80 lg:inline-block">
+            {item.description}
+          </p>
+        </AnimatedSection>
+      </div>
+    </div>
+  )
+}
+
+export default function Highlights() {
+  return (
+    <section className="relative overflow-hidden bg-[var(--color-parchment)] py-24 sm:py-32">
+      <GreekMeander className="absolute inset-x-0 top-0 opacity-40" color="var(--color-gold)" />
+
+      {/* Watermark */}
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute left-1/2 top-1/2 -z-0 -translate-x-1/2 -translate-y-1/2 select-none font-display leading-none text-[28vw] text-[var(--color-sienna)] opacity-[0.04]"
+      >
+        ΓΕΥΣΗ
+      </span>
+
+      <div className="relative mx-auto max-w-6xl px-6">
+        <AnimatedSection>
+          <SectionTitle
+            overline="Empfehlungen des Hauses"
+            title="Spezialitäten"
+            greek="Οἱ ἐκλεκτές μας"
+          />
+        </AnimatedSection>
+
+        <div className="mt-20 space-y-24 sm:mt-24 sm:space-y-32">
+          {highlights.map((item, i) => (
+            <SpotlightRow key={item.name} item={item} index={i} />
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   )
