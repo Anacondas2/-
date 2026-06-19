@@ -19,7 +19,7 @@ export default function FramedImage({ src, alt, className = '', eager = false }:
         aria-hidden="true"
         className="pointer-events-none absolute -inset-2 rounded-sm border border-[var(--color-gold)]/60 sm:-inset-3"
       />
-      <div className="relative overflow-hidden rounded-sm shadow-2xl ring-1 ring-[var(--color-malt)]/20">
+      <div className="relative h-full w-full overflow-hidden rounded-sm shadow-2xl ring-1 ring-[var(--color-malt)]/20">
         <img
           src={src}
           alt={alt}

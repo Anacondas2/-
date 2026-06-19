@@ -300,28 +300,34 @@ export const highlights = [
     name: 'Kleftiko',
     greek: 'Κλέφτικο',
     tagline: 'Langsam geschmort',
+    story: 'Einst von Hirten im verschlossenen Erdofen verborgen — daher der Name „der Dieb“.',
     description:
       'Über Stunden geschmortes Lamm mit Knoblauch, Zitrone und Bergkräutern — zart bis aufs Bein.',
     img: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=1000&q=80',
     accent: '#ecd2ab', // warm clay
+    glow: '#c2702f', // copper spotlight
   },
   {
     name: 'Gegrillter Oktopus',
     greek: 'Χταπόδι',
     tagline: 'Über offener Flamme',
+    story: 'Am Hafen im Wind getrocknet, dann über Holzkohle zu rauchiger Zartheit gegrillt.',
     description:
       'Über Holzkohle gegrillt, mit Kapern, Oregano und einem Spritzer Zitronenöl.',
     img: 'https://images.unsplash.com/photo-1559339352-11d035aa65de?w=1000&q=80',
     accent: '#ded8b6', // soft olive
+    glow: '#7e8a3f', // olive spotlight
   },
   {
     name: 'Baklava',
     greek: 'Μπακλαβάς',
     tagline: 'Hausrezept seit 1987',
+    story: 'Zweiunddreißig hauchdünne Teigblätter, von Hand geschichtet und in Thymianhonig getränkt.',
     description:
       'Hauchdünner Filoteig, Walnüsse und Thymianhonig — unser süßer Abschluss seit 1987.',
     img: 'https://images.unsplash.com/photo-1533777857889-4be7c70b33f7?w=1000&q=80',
     accent: '#f1dca6', // honey gold
+    glow: '#d8a526', // honey spotlight
   },
 ] as const
 
