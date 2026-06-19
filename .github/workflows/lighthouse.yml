@@ -1,0 +1,28 @@
+name: Lighthouse
+
+# Quality gate: builds the site and runs a Lighthouse audit (performance,
+# accessibility, best-practices, SEO). Non-blocking — it reports a public
+# report link in the job summary; it does not fail the build.
+
+on:
+  push:
+    branches: [claude/greeting-y4ax1c, main]
+  workflow_dispatch:
+
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Run Lighthouse
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          configPath: ./lighthouserc.json
+          temporaryPublicStorage: true
+          uploadArtifacts: true
