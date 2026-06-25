@@ -1,41 +1,20 @@
 @import "tailwindcss";
 
 /* ============================================================
-   Café Greco — Design Tokens (ui-ux-pro-max + ui-styling)
-   Palette extracted from the neo-antique banquet artwork.
+   STRK. — Brutalist Design Tokens
+   Palette: Vulkaniko #ff4103 + Noturno #001621
+   Style: Neo-brutalism — raw, oversized, high-contrast
    ============================================================ */
 @theme {
-  /* ── Core palette: Turmeric + Malt ───────────────────────────
-     turmeric #FFBE0B — vivid golden accent
-     malt     #2A2312 — deep roasted-brown base                  */
-  --color-turmeric: #ffbe0b; /* primary accent */
-  --color-turmeric-d: #e0a406; /* deep turmeric */
-  --color-turmeric-l: #ffd75a; /* light turmeric */
-  --color-malt: #2a2312; /* malt — darkest base */
-  --color-malt-d: #1c1810; /* deeper malt — footer */
-  --color-malt-l: #3a2f1c; /* lighter malt — cards */
+  --color-vulkaniko: #ff4103;
+  --color-noturno: #001621;
+  --color-white: #ffffff;
+  --color-gray-mid: #6b6b6b;
+  --color-gray-light: #c4c4c4;
+  --color-gray-dark: #1a2a35;
 
-  /* Semantic aliases — kept so existing components stay in tune.
-     (Names are historical; values now follow the turmeric/malt scheme.) */
-  --color-aegean: #2a2312; /* dark section base (= malt) */
-  --color-aegean-d: #1c1810; /* nav / footer (= malt deep) */
-  --color-aegean-l: #3a2f1c; /* raised surface (= malt light) */
-  --color-terracotta: #c56a30; /* warm copper secondary */
-  --color-sienna: #7a4622; /* dark sienna */
-  --color-olive: #9a7e3a; /* warm olive-tan */
-  --color-gold: #ffbe0b; /* accent / frames (= turmeric) */
-  --color-gold-l: #ffd75a; /* light accent (= turmeric light) */
-  --color-cream: #efd9a6; /* warm cream (text on dark) */
-  --color-sand: #dcc58e; /* sand (section background) */
-  --color-parchment: #f8efd9; /* parchment (light background) */
-  --color-parchment-d: #eee0c0; /* parchment deep */
-  --color-ink: #2a2312; /* dark text (= malt) */
-
-  /* Fonts */
-  --font-display: "Abril Fatface", "Playfair Display SC", serif;
-  --font-heading: "Playfair Display SC", serif;
-  --font-script: "Cormorant Garamond", serif;
-  --font-body: "Merriweather", Georgia, serif;
+  --font-display: 'Bebas Neue', sans-serif;
+  --font-body: 'Space Grotesk', sans-serif;
 }
 
 @layer base {
@@ -46,19 +25,17 @@
 
   body {
     margin: 0;
-    background-color: var(--color-parchment);
-    color: var(--color-ink);
+    background-color: var(--color-noturno);
+    color: var(--color-white);
     font-family: var(--font-body);
-    line-height: 1.7;
+    line-height: 1.6;
     overflow-x: hidden;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    /* No grey flash when tapping links/buttons on touch devices. */
     -webkit-tap-highlight-color: transparent;
   }
 
-  /* Comfortable tap targets and instant tap feedback on touch. */
   a,
   button,
   [role='tab'] {
@@ -71,24 +48,26 @@
   }
 
   ::selection {
-    background: var(--color-gold);
-    color: var(--color-aegean-d);
+    background: var(--color-vulkaniko);
+    color: var(--color-white);
   }
 
   h1,
   h2,
   h3,
   h4 {
-    line-height: 1.1;
+    line-height: 0.95;
     font-weight: 400;
     margin: 0;
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
   }
 
   p {
     margin: 0;
   }
 
-  /* Honour reduced-motion globally (UX guideline) */
   @media (prefers-reduced-motion: reduce) {
     html {
       scroll-behavior: auto;
@@ -107,38 +86,34 @@
   .font-display {
     font-family: var(--font-display);
   }
-  .font-heading {
-    font-family: var(--font-heading);
-  }
-  .font-script {
-    font-family: var(--font-script);
-  }
   .font-body {
     font-family: var(--font-body);
   }
 
-  /* Letterpress-style text shadow for headlines on dark backgrounds */
-  .text-engraved {
-    text-shadow:
-      0 1px 0 rgba(0, 0, 0, 0.35),
-      0 2px 6px rgba(0, 0, 0, 0.25);
+  .text-vulkaniko {
+    color: var(--color-vulkaniko);
+  }
+  .text-gray-light {
+    color: var(--color-gray-light);
+  }
+  .text-gray-mid {
+    color: var(--color-gray-mid);
   }
 
-  /* Decorative tracking for small-caps labels */
-  .tracking-antique {
-    letter-spacing: 0.22em;
+  .bg-vulkaniko {
+    background-color: var(--color-vulkaniko);
+  }
+  .bg-noturno {
+    background-color: var(--color-noturno);
+  }
+  .bg-gray-dark {
+    background-color: var(--color-gray-dark);
   }
 
-  /* Custom scrollbar — antique */
-  .antique-scroll::-webkit-scrollbar {
-    height: 6px;
-    width: 6px;
+  .border-vulkaniko {
+    border-color: var(--color-vulkaniko);
   }
-  .antique-scroll::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  .antique-scroll::-webkit-scrollbar-thumb {
-    background: var(--color-gold);
-    border-radius: 9999px;
+  .border-gray-mid {
+    border-color: var(--color-gray-mid);
   }
 }
